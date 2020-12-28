@@ -197,12 +197,22 @@
         return nil;
     }
     
+    return [self clientCertsFromP12Data:pkcs12data passphrase:passphrase];
+}
+
++ (NSArray *)clientCertsFromP12Data:(NSData *)p12Data passphrase:(NSString *)passphrase {
+    if (!p12Data) {
+        DDLogWarn(@"[MQTTCFSocketTransport] no p12 data given");
+        return nil;
+    }
+    
     if (!passphrase) {
         DDLogWarn(@"[MQTTCFSocketTransport] no passphrase given");
         return nil;
     }
+    
     CFArrayRef keyref = NULL;
-    OSStatus importStatus = SecPKCS12Import((__bridge CFDataRef)pkcs12data,
+    OSStatus importStatus = SecPKCS12Import((__bridge CFDataRef)p12Data,
                                             (__bridge CFDictionaryRef)@{(__bridge id)kSecImportExportPassphrase: passphrase},
                                             &keyref);
     if (importStatus != noErr) {

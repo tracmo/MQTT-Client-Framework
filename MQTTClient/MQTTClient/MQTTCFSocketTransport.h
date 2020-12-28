@@ -69,11 +69,33 @@
  [self.session connect];
  ...
  }
- 
  @endcode
- 
  */
-
 + (NSArray *)clientCertsFromP12:(NSString *)path passphrase:(NSString *)passphrase;
+
+/** convert a data of a PKCS12file to an certificates array for initWith...
+ @param p12Data the data of a PKCS12 file
+ @param passphrase the passphrase to unlock the PKCS12 file
+ @returns a certificates array or nil if an error occured
+ 
+ @code
+ NSString *path = [[NSBundle bundleForClass:[MQTTClientTests class]] pathForResource:@"filename"
+ ofType:@"p12"];
+ 
+ NSData *p12Data = [[NSData alloc] initWithContentsOfFile:path];
+ 
+ NSArray *myCerts = [MQTTCFSocketTransport clientCertsFromP12Data:p12Data passphrase:@"passphrase"];
+ if (myCerts) {
+ 
+ self.session = [[MQTTSession alloc] init];
+ ...
+ self.session.certificates = myCerts;
+ 
+ [self.session connect];
+ ...
+ }
+ @endcode
+ */
++ (NSArray *)clientCertsFromP12Data:(NSData *)p12Data passphrase:(NSString *)passphrase;
 
 @end
